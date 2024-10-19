@@ -32,6 +32,14 @@
         <label for="content" class="form-label">Content</label>
         <textarea class="form-control" id="content" name="content" rows="10" required></textarea>
     </div>
+    <div class="mb-3 form-check">
+        <input type="checkbox" class="form-check-input" id="save_as_template" name="save_as_template">
+        <label class="form-check-label" for="save_as_template">Save as a new template</label>
+    </div>
+    <div class="mb-3" id="template_name_container" style="display: none;">
+        <label for="template_name" class="form-label">Template Name</label>
+        <input type="text" class="form-control" id="template_name" name="template_name">
+    </div>
     <button type="submit" class="btn btn-primary">Create Worksheet</button>
 </form>
 {% endblock %}
@@ -42,21 +50,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const worksheetForm = document.getElementById('worksheetForm');
     const templateSelect = document.getElementById('template');
     const contentTextarea = document.getElementById('content');
+    const saveAsTemplateCheckbox = document.getElementById('save_as_template');
+    const templateNameContainer = document.getElementById('template_name_container');
 
-    console.log('DOM loaded, adding event listeners');
+    saveAsTemplateCheckbox.addEventListener('change', function() {
+        templateNameContainer.style.display = this.checked ? 'block' : 'none';
+    });
 
     templateSelect.addEventListener('change', function() {
         const selectedTemplateId = this.value;
-        console.log('Selected template ID:', selectedTemplateId);
-
         if (selectedTemplateId) {
             fetch(`/get_template/${selectedTemplateId}`)
-                .then(response => {
-                    console.log('Fetch response:', response);
-                    return response.json();
-                })
+                .then(response => response.json())
                 .then(data => {
-                    console.log('Template data:', data);
                     if (data.success) {
                         contentTextarea.value = data.content;
                     } else {
@@ -75,20 +81,17 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
         const formData = new FormData(this);
 
-        console.log('Form submitted, sending data to server');
-
         fetch('/create_worksheet', {
             method: 'POST',
             body: formData
         })
         .then(response => response.json())
         .then(data => {
-            console.log('Server response:', data);
             if (data.success) {
                 alert('Worksheet created successfully!');
                 window.location.href = '/dashboard';
             } else {
-                alert('Failed to create worksheet. Please try again.');
+                alert('Failed to create worksheet. ' + data.error);
             }
         })
         .catch(error => {

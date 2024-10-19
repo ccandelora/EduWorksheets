@@ -28,6 +28,8 @@ def create_worksheet():
             topic = request.form.get('topic')
             template_id = request.form.get('template_id')
             content = request.form.get('content')
+            save_as_template = request.form.get('save_as_template') == 'on'
+            template_name = request.form.get('template_name')
 
             new_worksheet = Worksheet(
                 title=title,
@@ -39,6 +41,17 @@ def create_worksheet():
                 template_id=template_id
             )
             db.session.add(new_worksheet)
+
+            if save_as_template and template_name:
+                new_template = WorksheetTemplate(
+                    name=template_name,
+                    description=f"Custom template created by {current_user.username}",
+                    template_type="custom",
+                    content=content
+                )
+                db.session.add(new_template)
+                logger.info(f"New template created: {template_name} by user {current_user.id}")
+
             db.session.commit()
 
             logger.info(f"Worksheet created: {new_worksheet.id} by user {current_user.id}")
