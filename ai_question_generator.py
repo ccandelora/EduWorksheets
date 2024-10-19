@@ -29,11 +29,10 @@ def generate_questions(subject, grade_level, topic, num_questions=5):
             ],
             max_tokens=1000,
             n=1,
-            stop=None,
             temperature=0.7,
         )
 
-        questions = response.choices[0].message['content'].strip().split("\n")
+        questions = response.choices[0].message.content.strip().split("\n")
         return questions, None
     except Exception as e:
         print(f"Error generating questions: {str(e)}")
