@@ -40,10 +40,13 @@ def generate_ai_questions():
     subject = data.get('subject')
     grade_level = data.get('grade_level')
     topic = data.get('topic')
-    num_questions = data.get('num_questions', 5)
+    num_questions = int(data.get('num_questions', 5))
 
     if not all([subject, grade_level, topic]):
         return jsonify({'error': 'Missing required fields'}), 400
+
+    if num_questions < 1 or num_questions > 10:
+        return jsonify({'error': 'Number of questions must be between 1 and 10'}), 400
 
     questions, error = generate_questions(subject, grade_level, topic, num_questions)
 

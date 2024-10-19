@@ -60,7 +60,9 @@
         <input type="file" class="form-control" id="file_upload" name="file_upload" accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png">
     </div>
     <div class="mb-3">
-        <button type="button" id="generateAIQuestions" class="btn btn-secondary">Generate AI Questions</button>
+        <label for="num_questions" class="form-label">Number of AI Questions</label>
+        <input type="number" class="form-control" id="num_questions" name="num_questions" min="1" max="10" value="5">
+        <button type="button" id="generateAIQuestions" class="btn btn-secondary mt-2">Generate AI Questions</button>
     </div>
     <div id="aiGeneratedQuestions" class="mb-3" style="display: none;">
         <h4>AI Generated Questions:</h4>
@@ -93,6 +95,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const aiGeneratedQuestions = document.getElementById('aiGeneratedQuestions');
     const questionList = document.getElementById('questionList');
     const addAIQuestionsBtn = document.getElementById('addAIQuestions');
+    const numQuestionsInput = document.getElementById('num_questions');
 
     saveAsTemplateCheckbox.addEventListener('change', function() {
         templateNameContainer.style.display = this.checked ? 'block' : 'none';
@@ -122,6 +125,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const subject = document.getElementById('subject').value;
         const gradeLevel = document.getElementById('grade_level').value;
         const topic = document.getElementById('topic').value;
+        const numQuestions = numQuestionsInput.value;
 
         if (!subject || !gradeLevel || !topic) {
             alert('Please fill in the subject, grade level, and topic fields before generating AI questions.');
@@ -137,7 +141,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 subject: subject,
                 grade_level: gradeLevel,
                 topic: topic,
-                num_questions: 5
+                num_questions: parseInt(numQuestions)
             }),
         })
         .then(response => response.json())
