@@ -1,12 +1,13 @@
-from app import db
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
+from app import db
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(64), unique=True, nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password_hash = db.Column(db.String(256), nullable=False)
+    username = db.Column(db.String(64), index=True, unique=True)
+    email = db.Column(db.String(120), index=True, unique=True)
+    password_hash = db.Column(db.String(128))
+    lti_user_id = db.Column(db.String(255), unique=True, nullable=True)
     worksheets = db.relationship('Worksheet', backref='author', lazy='dynamic')
 
     def set_password(self, password):
@@ -23,9 +24,9 @@ class Worksheet(db.Model):
     topic = db.Column(db.String(100), nullable=False)
     content = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    template_id = db.Column(db.Integer, db.ForeignKey('worksheet_template.id'), nullable=False)
+    template_id = db.Column(db.Integer, db.ForeignKey('worksheet_template.id'), nullable=True)
     is_shared = db.Column(db.Boolean, default=False)
-    shared_with = db.Column(db.Text)  # Store comma-separated user IDs
+    shared_with = db.Column(db.String(255), default='')
 
 class WorksheetTemplate(db.Model):
     id = db.Column(db.Integer, primary_key=True)

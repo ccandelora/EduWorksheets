@@ -20,6 +20,18 @@ app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
     "pool_pre_ping": True,
 }
 
+# LTI Configuration
+app.config['LTI_TOOL_CONFIG'] = {
+    "http://imsglobal.org": {
+        "client_id": os.environ.get("LTI_CLIENT_ID"),
+        "auth_login_url": os.environ.get("LTI_AUTH_LOGIN_URL"),
+        "auth_token_url": os.environ.get("LTI_AUTH_TOKEN_URL"),
+        "key_set_url": os.environ.get("LTI_KEY_SET_URL"),
+        "private_key_file": os.environ.get("LTI_PRIVATE_KEY_FILE"),
+        "deployment_ids": [os.environ.get("LTI_DEPLOYMENT_ID")]
+    }
+}
+
 db.init_app(app)
 login_manager.init_app(app)
 migrate.init_app(app, db)
@@ -30,9 +42,11 @@ with app.app_context():
 
 from auth import auth_bp
 from worksheet_generator import worksheet_bp
+from lms_integration import lti_bp
 
 app.register_blueprint(auth_bp)
 app.register_blueprint(worksheet_bp)
+app.register_blueprint(lti_bp, url_prefix='/lti')
 
 @app.route('/')
 def index():
