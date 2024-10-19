@@ -32,6 +32,14 @@
         <label for="content" class="form-label">Content</label>
         <textarea class="form-control" id="content" name="content" rows="10" required></textarea>
     </div>
+    <div class="mb-3">
+        <button type="button" id="generateAIQuestions" class="btn btn-secondary">Generate AI Questions</button>
+    </div>
+    <div id="aiGeneratedQuestions" class="mb-3" style="display: none;">
+        <h4>AI Generated Questions:</h4>
+        <ul id="questionList" class="list-group"></ul>
+        <button type="button" id="addAIQuestions" class="btn btn-primary mt-2">Add to Worksheet</button>
+    </div>
     <div class="mb-3 form-check">
         <input type="checkbox" class="form-check-input" id="save_as_template" name="save_as_template">
         <label class="form-check-label" for="save_as_template">Save as a new template</label>
@@ -52,6 +60,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const contentTextarea = document.getElementById('content');
     const saveAsTemplateCheckbox = document.getElementById('save_as_template');
     const templateNameContainer = document.getElementById('template_name_container');
+    const generateAIQuestionsBtn = document.getElementById('generateAIQuestions');
+    const aiGeneratedQuestions = document.getElementById('aiGeneratedQuestions');
+    const questionList = document.getElementById('questionList');
+    const addAIQuestionsBtn = document.getElementById('addAIQuestions');
 
     saveAsTemplateCheckbox.addEventListener('change', function() {
         templateNameContainer.style.display = this.checked ? 'block' : 'none';
@@ -75,6 +87,56 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             contentTextarea.value = '';
         }
+    });
+
+    generateAIQuestionsBtn.addEventListener('click', function() {
+        const subject = document.getElementById('subject').value;
+        const gradeLevel = document.getElementById('grade_level').value;
+        const topic = document.getElementById('topic').value;
+
+        if (!subject || !gradeLevel || !topic) {
+            alert('Please fill in the subject, grade level, and topic fields before generating AI questions.');
+            return;
+        }
+
+        fetch('/generate_ai_questions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                subject: subject,
+                grade_level: gradeLevel,
+                topic: topic,
+                num_questions: 5
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.questions) {
+                questionList.innerHTML = '';
+                data.questions.forEach(question => {
+                    const li = document.createElement('li');
+                    li.className = 'list-group-item';
+                    li.textContent = question;
+                    questionList.appendChild(li);
+                });
+                aiGeneratedQuestions.style.display = 'block';
+            } else {
+                alert('Failed to generate AI questions. Please try again.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while generating AI questions');
+        });
+    });
+
+    addAIQuestionsBtn.addEventListener('click', function() {
+        const questions = Array.from(questionList.children).map(li => li.textContent);
+        const formattedQuestions = questions.join('\n\n');
+        contentTextarea.value += (contentTextarea.value ? '\n\n' : '') + formattedQuestions;
+        aiGeneratedQuestions.style.display = 'none';
     });
 
     worksheetForm.addEventListener('submit', function(e) {

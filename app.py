@@ -43,10 +43,12 @@ with app.app_context():
 from auth import auth_bp
 from worksheet_generator import worksheet_bp
 from lms_integration import lti_bp
+from ai_question_generator import ai_question_bp
 
 app.register_blueprint(auth_bp)
 app.register_blueprint(worksheet_bp)
-app.register_blueprint(lti_bp, url_prefix='/lti')
+app.register_blueprint(lti_bp, url_prefix='/lti', name='lti_blueprint')
+app.register_blueprint(ai_question_bp)
 
 @app.route('/')
 def index():
