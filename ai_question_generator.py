@@ -18,25 +18,25 @@ def generate_questions(subject, grade_level, topic, num_questions=5):
     if grade_level not in grade_levels:
         return [], "Invalid grade level. Please choose from: " + ", ".join(grade_levels)
 
-    prompt = f"Generate {num_questions} {grade_level} grade level questions about {subject} focusing on {topic}. Format the output as a numbered list."
+    prompt = f"Generate {num_questions} diverse {grade_level} grade level questions about {subject} focusing on {topic}. Include a mix of question types (e.g., multiple choice, open-ended, problem-solving). Format the output as a numbered list."
 
     try:
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "You are a helpful assistant that generates educational questions."},
+                {"role": "system", "content": "You are a helpful assistant that generates diverse and engaging educational questions."},
                 {"role": "user", "content": prompt}
             ],
-            max_tokens=1000,
+            max_tokens=1500,
             n=1,
-            temperature=0.7,
+            temperature=0.8,
         )
 
         questions = response.choices[0].message.content.strip().split("\n")
         return questions, None
     except Exception as e:
         print(f"Error generating questions: {str(e)}")
-        return [], "Failed to generate questions"
+        return [], "Failed to generate questions. Please try again."
 
 @ai_question_bp.route('/generate_ai_questions', methods=['POST'])
 @login_required
@@ -58,4 +58,9 @@ def generate_ai_questions():
     if questions:
         return jsonify({'questions': questions})
     else:
-        return jsonify({'error': 'Failed to generate questions'}), 500
+        return jsonify({'error': 'Failed to generate questions. Please try again.'}), 500
+
+@ai_question_bp.route('/regenerate_ai_questions', methods=['POST'])
+@login_required
+def regenerate_ai_questions():
+    return generate_ai_questions()

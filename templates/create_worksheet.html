@@ -65,6 +65,7 @@
     <div id="aiGeneratedQuestions" class="mb-3" style="display: none;">
         <h4>AI Generated Questions:</h4>
         <ul id="questionList" class="list-group"></ul>
+        <button type="button" id="regenerateAIQuestions" class="btn btn-secondary mt-2">Regenerate Questions</button>
         <button type="button" id="addAIQuestions" class="btn btn-primary mt-2">Add to Worksheet</button>
     </div>
     <div class="mb-3 form-check">
@@ -88,6 +89,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const saveAsTemplateCheckbox = document.getElementById('save_as_template');
     const templateNameContainer = document.getElementById('template_name_container');
     const generateAIQuestionsBtn = document.getElementById('generateAIQuestions');
+    const regenerateAIQuestionsBtn = document.getElementById('regenerateAIQuestions');
     const aiGeneratedQuestions = document.getElementById('aiGeneratedQuestions');
     const questionList = document.getElementById('questionList');
     const addAIQuestionsBtn = document.getElementById('addAIQuestions');
@@ -116,7 +118,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    generateAIQuestionsBtn.addEventListener('click', function() {
+    function generateQuestions() {
         const subject = document.getElementById('subject').value;
         const gradeLevel = document.getElementById('grade_level').value;
         const topic = document.getElementById('topic').value;
@@ -157,7 +159,10 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Error:', error);
             alert('An error occurred while generating AI questions');
         });
-    });
+    }
+
+    generateAIQuestionsBtn.addEventListener('click', generateQuestions);
+    regenerateAIQuestionsBtn.addEventListener('click', generateQuestions);
 
     addAIQuestionsBtn.addEventListener('click', function() {
         const questions = Array.from(questionList.children).map(li => li.textContent);
