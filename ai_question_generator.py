@@ -1,12 +1,12 @@
 import os
-from openai import OpenAI
+import google.generativeai as genai
 from flask import Blueprint, request, jsonify
 from flask_login import login_required
 
 ai_question_bp = Blueprint('ai_question', __name__)
 
-# Set up OpenAI API key
-client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+# Set up Google Gemini API key
+genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
 
 def generate_questions(subject, grade_level, topic, num_questions=5):
     subjects = ["math", "science", "reading", "writing", "spelling", "reading comprehension"]
@@ -21,19 +21,14 @@ def generate_questions(subject, grade_level, topic, num_questions=5):
     prompt = f"Generate {num_questions} diverse {grade_level} grade level questions about {subject} focusing on {topic}. Include a mix of question types (e.g., multiple choice, open-ended, problem-solving). Format the output as a numbered list."
 
     try:
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "system", "content": "You are a helpful assistant that generates diverse and engaging educational questions."},
-                {"role": "user", "content": prompt}
-            ],
-            max_tokens=1500,
-            n=1,
-            temperature=0.8,
-        )
+        model = genai.GenerativeModel('gemini-pro')
+        response = model.generate_content(prompt)
 
-        questions = response.choices[0].message.content.strip().split("\n")
-        return questions, None
+        if response.text:
+            questions = response.text.strip().split("\n")
+            return questions, None
+        else:
+            return [], "Failed to generate questions. Please try again."
     except Exception as e:
         print(f"Error generating questions: {str(e)}")
         return [], "Failed to generate questions. Please try again."
