@@ -43,12 +43,20 @@ document.addEventListener('DOMContentLoaded', function() {
     const templateSelect = document.getElementById('template');
     const contentTextarea = document.getElementById('content');
 
+    console.log('DOM loaded, adding event listeners');
+
     templateSelect.addEventListener('change', function() {
         const selectedTemplateId = this.value;
+        console.log('Selected template ID:', selectedTemplateId);
+
         if (selectedTemplateId) {
             fetch(`/get_template/${selectedTemplateId}`)
-                .then(response => response.json())
+                .then(response => {
+                    console.log('Fetch response:', response);
+                    return response.json();
+                })
                 .then(data => {
+                    console.log('Template data:', data);
                     if (data.success) {
                         contentTextarea.value = data.content;
                     } else {
@@ -67,12 +75,15 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
         const formData = new FormData(this);
 
+        console.log('Form submitted, sending data to server');
+
         fetch('/create_worksheet', {
             method: 'POST',
             body: formData
         })
         .then(response => response.json())
         .then(data => {
+            console.log('Server response:', data);
             if (data.success) {
                 alert('Worksheet created successfully!');
                 window.location.href = '/dashboard';
