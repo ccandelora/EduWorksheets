@@ -22,6 +22,11 @@ class Worksheet(db.Model):
     subject = db.Column(db.String(50), nullable=False)
     grade_level = db.Column(db.String(20), nullable=False)
     topic = db.Column(db.String(100), nullable=False)
+    subtopic = db.Column(db.String(100), nullable=True)
+    difficulty = db.Column(db.String(20), nullable=True)
+    estimated_time = db.Column(db.Integer, nullable=True)  # in minutes
+    learning_objectives = db.Column(db.Text, nullable=True)
+    keywords = db.Column(db.String(255), nullable=True)
     content = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     template_id = db.Column(db.Integer, db.ForeignKey('worksheet_template.id'), nullable=True)
@@ -30,6 +35,8 @@ class Worksheet(db.Model):
     file_name = db.Column(db.String(255), nullable=True)
     file_path = db.Column(db.String(255), nullable=True)
     file_type = db.Column(db.String(50), nullable=True)
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+    updated_at = db.Column(db.DateTime, server_default=db.func.now(), onupdate=db.func.now())
 
 class WorksheetTemplate(db.Model):
     id = db.Column(db.Integer, primary_key=True)

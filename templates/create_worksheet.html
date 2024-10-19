@@ -43,6 +43,31 @@
         <input type="text" class="form-control" id="topic" name="topic" required>
     </div>
     <div class="mb-3">
+        <label for="subtopic" class="form-label">Subtopic</label>
+        <input type="text" class="form-control" id="subtopic" name="subtopic">
+    </div>
+    <div class="mb-3">
+        <label for="difficulty" class="form-label">Difficulty</label>
+        <select class="form-select" id="difficulty" name="difficulty">
+            <option value="">Select difficulty</option>
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="estimated_time" class="form-label">Estimated Time (in minutes)</label>
+        <input type="number" class="form-control" id="estimated_time" name="estimated_time" min="1">
+    </div>
+    <div class="mb-3">
+        <label for="learning_objectives" class="form-label">Learning Objectives</label>
+        <textarea class="form-control" id="learning_objectives" name="learning_objectives" rows="3"></textarea>
+    </div>
+    <div class="mb-3">
+        <label for="keywords" class="form-label">Keywords (comma-separated)</label>
+        <input type="text" class="form-control" id="keywords" name="keywords">
+    </div>
+    <div class="mb-3">
         <label for="template" class="form-label">Template</label>
         <select class="form-select" id="template" name="template_id">
             <option value="">Select a template</option>

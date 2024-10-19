@@ -12,6 +12,21 @@
     <strong>Topic:</strong> {{ worksheet.topic }}
 </div>
 <div class="mb-3">
+    <strong>Subtopic:</strong> {{ worksheet.subtopic or 'N/A' }}
+</div>
+<div class="mb-3">
+    <strong>Difficulty:</strong> {{ worksheet.difficulty or 'N/A' }}
+</div>
+<div class="mb-3">
+    <strong>Estimated Time:</strong> {{ worksheet.estimated_time or 'N/A' }} minutes
+</div>
+<div class="mb-3">
+    <strong>Learning Objectives:</strong> {{ worksheet.learning_objectives or 'N/A' }}
+</div>
+<div class="mb-3">
+    <strong>Keywords:</strong> {{ worksheet.keywords or 'N/A' }}
+</div>
+<div class="mb-3">
     <h3>Content:</h3>
     <div class="border p-3">
         {{ worksheet.content|safe }}
@@ -38,6 +53,31 @@
         <div class="mb-3">
             <label for="topic" class="form-label">Topic</label>
             <input type="text" class="form-control" id="topic" name="topic" value="{{ worksheet.topic }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="subtopic" class="form-label">Subtopic</label>
+            <input type="text" class="form-control" id="subtopic" name="subtopic" value="{{ worksheet.subtopic }}">
+        </div>
+        <div class="mb-3">
+            <label for="difficulty" class="form-label">Difficulty</label>
+            <select class="form-select" id="difficulty" name="difficulty">
+                <option value="">Select difficulty</option>
+                <option value="easy" {% if worksheet.difficulty == 'easy' %}selected{% endif %}>Easy</option>
+                <option value="medium" {% if worksheet.difficulty == 'medium' %}selected{% endif %}>Medium</option>
+                <option value="hard" {% if worksheet.difficulty == 'hard' %}selected{% endif %}>Hard</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="estimated_time" class="form-label">Estimated Time (in minutes)</label>
+            <input type="number" class="form-control" id="estimated_time" name="estimated_time" value="{{ worksheet.estimated_time }}" min="1">
+        </div>
+        <div class="mb-3">
+            <label for="learning_objectives" class="form-label">Learning Objectives</label>
+            <textarea class="form-control" id="learning_objectives" name="learning_objectives" rows="3">{{ worksheet.learning_objectives }}</textarea>
+        </div>
+        <div class="mb-3">
+            <label for="keywords" class="form-label">Keywords (comma-separated)</label>
+            <input type="text" class="form-control" id="keywords" name="keywords" value="{{ worksheet.keywords }}">
         </div>
         <div class="mb-3">
             <label for="content" class="form-label">Content</label>

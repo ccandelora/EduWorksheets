@@ -26,6 +26,11 @@ def create_worksheet():
             subject = request.form.get('subject')
             grade_level = request.form.get('grade_level')
             topic = request.form.get('topic')
+            subtopic = request.form.get('subtopic')
+            difficulty = request.form.get('difficulty')
+            estimated_time = request.form.get('estimated_time')
+            learning_objectives = request.form.get('learning_objectives')
+            keywords = request.form.get('keywords')
             template_id = request.form.get('template_id')
             content = request.form.get('content')
             save_as_template = request.form.get('save_as_template') == 'on'
@@ -36,6 +41,11 @@ def create_worksheet():
                 subject=subject,
                 grade_level=grade_level,
                 topic=topic,
+                subtopic=subtopic,
+                difficulty=difficulty,
+                estimated_time=estimated_time,
+                learning_objectives=learning_objectives,
+                keywords=keywords,
                 content=content,
                 user_id=current_user.id,
                 template_id=template_id
@@ -100,6 +110,11 @@ def update_worksheet(worksheet_id):
         worksheet.subject = request.form.get('subject')
         worksheet.grade_level = request.form.get('grade_level')
         worksheet.topic = request.form.get('topic')
+        worksheet.subtopic = request.form.get('subtopic')
+        worksheet.difficulty = request.form.get('difficulty')
+        worksheet.estimated_time = request.form.get('estimated_time')
+        worksheet.learning_objectives = request.form.get('learning_objectives')
+        worksheet.keywords = request.form.get('keywords')
         worksheet.content = request.form.get('content')
         
         db.session.commit()

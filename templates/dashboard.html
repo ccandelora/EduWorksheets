@@ -13,7 +13,10 @@
                 <p class="card-text">
                     Subject: {{ worksheet.subject }}<br>
                     Grade Level: {{ worksheet.grade_level }}<br>
-                    Topic: {{ worksheet.topic }}
+                    Topic: {{ worksheet.topic }}<br>
+                    Subtopic: {{ worksheet.subtopic or 'N/A' }}<br>
+                    Difficulty: {{ worksheet.difficulty or 'N/A' }}<br>
+                    Estimated Time: {{ worksheet.estimated_time or 'N/A' }} minutes
                 </p>
                 <a href="{{ url_for('worksheet.preview_worksheet', worksheet_id=worksheet.id) }}" class="btn btn-primary">Preview</a>
                 <a href="{{ url_for('worksheet.download_worksheet', worksheet_id=worksheet.id) }}" class="btn btn-secondary">Download PDF</a>
@@ -38,6 +41,9 @@
                     Subject: {{ worksheet.subject }}<br>
                     Grade Level: {{ worksheet.grade_level }}<br>
                     Topic: {{ worksheet.topic }}<br>
+                    Subtopic: {{ worksheet.subtopic or 'N/A' }}<br>
+                    Difficulty: {{ worksheet.difficulty or 'N/A' }}<br>
+                    Estimated Time: {{ worksheet.estimated_time or 'N/A' }} minutes<br>
                     Shared by: {{ worksheet.author.username }}
                 </p>
                 <a href="{{ url_for('worksheet.preview_worksheet', worksheet_id=worksheet.id) }}" class="btn btn-primary">Preview</a>
