@@ -22,6 +22,7 @@
     <div class="mb-3">
         <label for="template" class="form-label">Template</label>
         <select class="form-select" id="template" name="template_id" required>
+            <option value="">Select a template</option>
             {% for template in templates %}
             <option value="{{ template.id }}">{{ template.name }}</option>
             {% endfor %}
@@ -42,16 +43,24 @@ document.addEventListener('DOMContentLoaded', function() {
     const templateSelect = document.getElementById('template');
     const contentTextarea = document.getElementById('content');
 
-    // Sample templates (in a real application, these would be fetched from the server)
-    const templates = {
-        1: "Multiple Choice:\n1. Question\n   a) Option 1\n   b) Option 2\n   c) Option 3\n   d) Option 4\n\n2. Question\n   a) Option 1\n   b) Option 2\n   c) Option 3\n   d) Option 4",
-        2: "Fill in the blanks:\n1. __________ is the capital of France.\n2. The largest planet in our solar system is __________.",
-        3: "Matching:\n1. A) Item 1    [  ] Corresponding item\n2. B) Item 2    [  ] Corresponding item\n3. C) Item 3    [  ] Corresponding item"
-    };
-
     templateSelect.addEventListener('change', function() {
         const selectedTemplateId = this.value;
-        contentTextarea.value = templates[selectedTemplateId] || '';
+        if (selectedTemplateId) {
+            fetch(`/get_template/${selectedTemplateId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        contentTextarea.value = data.content;
+                    } else {
+                        console.error('Failed to load template content');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        } else {
+            contentTextarea.value = '';
+        }
     });
 
     worksheetForm.addEventListener('submit', function(e) {
