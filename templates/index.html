@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="jumbotron">
+    <h1 class="display-4">Welcome to the Educational Worksheet Generator</h1>
+    <p class="lead">Create custom worksheets for your students with ease.</p>
+    <hr class="my-4">
+    <p>Get started by logging in or creating an account.</p>
+    <a class="btn btn-primary btn-lg" href="{{ url_for('auth.login') }}" role="button">Login</a>
+    <a class="btn btn-secondary btn-lg" href="{{ url_for('auth.register') }}" role="button">Register</a>
+</div>
+{% endblock %}

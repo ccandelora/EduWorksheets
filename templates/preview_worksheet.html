@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>{{ worksheet.title }}</h2>
+<div class="mb-3">
+    <strong>Subject:</strong> {{ worksheet.subject }}
+</div>
+<div class="mb-3">
+    <strong>Grade Level:</strong> {{ worksheet.grade_level }}
+</div>
+<div class="mb-3">
+    <strong>Topic:</strong> {{ worksheet.topic }}
+</div>
+<div class="mb-3">
+    <h3>Content:</h3>
+    <div class="border p-3">
+        {{ worksheet.content|safe }}
+    </div>
+</div>
+<a href="{{ url_for('worksheet.download_worksheet', worksheet_id=worksheet.id) }}" class="btn btn-primary">Download PDF</a>
+<button id="editWorksheet" class="btn btn-secondary">Edit Worksheet</button>
+
+<div id="editForm" style="display: none;" class="mt-4">
+    <h3>Edit Worksheet</h3>
+    <form id="updateWorksheetForm">
+        <div class="mb-3">
+            <label for="title" class="form-label">Title</label>
+            <input type="text" class="form-control" id="title" name="title" value="{{ worksheet.title }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="subject" class="form-label">Subject</label>
+            <input type="text" class="form-control" id="subject" name="subject" value="{{ worksheet.subject }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="grade_level" class="form-label">Grade Level</label>
+            <input type="text" class="form-control" id="grade_level" name="grade_level" value="{{ worksheet.grade_level }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="topic" class="form-label">Topic</label>
+            <input type="text" class="form-control" id="topic" name="topic" value="{{ worksheet.topic }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="content" class="form-label">Content</label>
+            <textarea class="form-control" id="content" name="content" rows="10" required>{{ worksheet.content }}</textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Update Worksheet</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('editWorksheet').addEventListener('click', function() {
+    document.getElementById('editForm').style.display = 'block';
+});
+
+document.getElementById('updateWorksheetForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+    fetch('/update_worksheet/{{ worksheet.id }}', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Worksheet updated successfully');
+            location.reload();
+        } else {
+            alert('Failed to update worksheet');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while updating the worksheet');
+    });
+});
+</script>
+{% endblock %}

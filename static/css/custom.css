@@ -1,0 +1,11 @@
+/* Add any custom styles here */
+body {
+    padding-bottom: 20px;
+}
+
+.jumbotron {
+    padding: 2rem 1rem;
+    margin-bottom: 2rem;
+    background-color: var(--bs-dark);
+    border-radius: .3rem;
+}

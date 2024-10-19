@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Create New Worksheet</h2>
+<form id="worksheetForm">
+    <div class="mb-3">
+        <label for="title" class="form-label">Title</label>
+        <input type="text" class="form-control" id="title" name="title" required>
+    </div>
+    <div class="mb-3">
+        <label for="subject" class="form-label">Subject</label>
+        <input type="text" class="form-control" id="subject" name="subject" required>
+    </div>
+    <div class="mb-3">
+        <label for="grade_level" class="form-label">Grade Level</label>
+        <input type="text" class="form-control" id="grade_level" name="grade_level" required>
+    </div>
+    <div class="mb-3">
+        <label for="topic" class="form-label">Topic</label>
+        <input type="text" class="form-control" id="topic" name="topic" required>
+    </div>
+    <div class="mb-3">
+        <label for="template" class="form-label">Template</label>
+        <select class="form-select" id="template" name="template_id" required>
+            {% for template in templates %}
+            <option value="{{ template.id }}">{{ template.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="content" class="form-label">Content</label>
+        <textarea class="form-control" id="content" name="content" rows="10" required></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Create Worksheet</button>
+</form>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/worksheet_editor.js') }}"></script>
+{% endblock %}
