@@ -6,7 +6,7 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
-    password_hash = db.Column(db.String(128))
+    password_hash = db.Column(db.String(255))
     lti_user_id = db.Column(db.String(255), unique=True, nullable=True)
     worksheets = db.relationship('Worksheet', backref='author', lazy='dynamic')
 
@@ -27,6 +27,9 @@ class Worksheet(db.Model):
     template_id = db.Column(db.Integer, db.ForeignKey('worksheet_template.id'), nullable=True)
     is_shared = db.Column(db.Boolean, default=False)
     shared_with = db.Column(db.String(255), default='')
+    file_name = db.Column(db.String(255), nullable=True)
+    file_path = db.Column(db.String(255), nullable=True)
+    file_type = db.Column(db.String(50), nullable=True)
 
 class WorksheetTemplate(db.Model):
     id = db.Column(db.Integer, primary_key=True)

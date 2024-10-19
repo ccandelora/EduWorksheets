@@ -19,6 +19,10 @@ args = "Start Flask App"
 task = "workflow.run"
 args = "Check and Add Templates"
 
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Check Database Connection"
+
 [[workflows.workflow]]
 name = "Start Flask App"
 author = "agent"
@@ -41,6 +45,17 @@ agentRequireRestartOnSave = false
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "python check_and_add_templates.py"
+
+[[workflows.workflow]]
+name = "Check Database Connection"
+author = "agent"
+
+[workflows.workflow.metadata]
+agentRequireRestartOnSave = false
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python check_db_connection.py"
 
 [deployment]
 run = ["sh", "-c", "python main.py"]
