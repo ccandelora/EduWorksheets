@@ -2,9 +2,10 @@
 
 {% block content %}
 <h2>Welcome, {{ current_user.username }}!</h2>
+
 <h3 class="mt-4">Your Worksheets</h3>
 <div class="row">
-    {% for worksheet in worksheets %}
+    {% for worksheet in own_worksheets %}
     <div class="col-md-4 mb-4">
         <div class="card">
             <div class="card-body">
@@ -16,6 +17,7 @@
                 </p>
                 <a href="{{ url_for('worksheet.preview_worksheet', worksheet_id=worksheet.id) }}" class="btn btn-primary">Preview</a>
                 <a href="{{ url_for('worksheet.download_worksheet', worksheet_id=worksheet.id) }}" class="btn btn-secondary">Download PDF</a>
+                <a href="{{ url_for('worksheet.share_worksheet', worksheet_id=worksheet.id) }}" class="btn btn-info">Share</a>
                 <button class="btn btn-danger delete-worksheet" data-worksheet-id="{{ worksheet.id }}">Delete</button>
             </div>
         </div>
@@ -24,6 +26,30 @@
     <p>You haven't created any worksheets yet.</p>
     {% endfor %}
 </div>
+
+<h3 class="mt-4">Shared Worksheets</h3>
+<div class="row">
+    {% for worksheet in shared_worksheets %}
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">{{ worksheet.title }}</h5>
+                <p class="card-text">
+                    Subject: {{ worksheet.subject }}<br>
+                    Grade Level: {{ worksheet.grade_level }}<br>
+                    Topic: {{ worksheet.topic }}<br>
+                    Shared by: {{ worksheet.author.username }}
+                </p>
+                <a href="{{ url_for('worksheet.preview_worksheet', worksheet_id=worksheet.id) }}" class="btn btn-primary">Preview</a>
+                <a href="{{ url_for('worksheet.download_worksheet', worksheet_id=worksheet.id) }}" class="btn btn-secondary">Download PDF</a>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <p>No worksheets have been shared with you yet.</p>
+    {% endfor %}
+</div>
+
 <a href="{{ url_for('worksheet.create_worksheet') }}" class="btn btn-success mt-3">Create New Worksheet</a>
 {% endblock %}
 

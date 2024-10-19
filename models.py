@@ -24,6 +24,8 @@ class Worksheet(db.Model):
     content = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     template_id = db.Column(db.Integer, db.ForeignKey('worksheet_template.id'), nullable=False)
+    is_shared = db.Column(db.Boolean, default=False)
+    shared_with = db.Column(db.Text)  # Store comma-separated user IDs
 
 class WorksheetTemplate(db.Model):
     id = db.Column(db.Integer, primary_key=True)

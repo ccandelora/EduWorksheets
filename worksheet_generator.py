@@ -1,8 +1,8 @@
 import logging
-from flask import Blueprint, render_template, request, jsonify, send_file, abort
+from flask import Blueprint, render_template, request, jsonify, send_file, abort, redirect, url_for
 from flask_login import login_required, current_user
 from app import db
-from models import Worksheet, WorksheetTemplate
+from models import Worksheet, WorksheetTemplate, User
 from pdf_generator import generate_pdf
 
 worksheet_bp = Blueprint('worksheet', __name__)
@@ -13,8 +13,9 @@ logger = logging.getLogger(__name__)
 @worksheet_bp.route('/dashboard')
 @login_required
 def dashboard():
-    worksheets = Worksheet.query.filter_by(user_id=current_user.id).all()
-    return render_template('dashboard.html', worksheets=worksheets)
+    own_worksheets = Worksheet.query.filter_by(user_id=current_user.id).all()
+    shared_worksheets = Worksheet.query.filter(Worksheet.is_shared == True, Worksheet.shared_with.contains(str(current_user.id))).all()
+    return render_template('dashboard.html', own_worksheets=own_worksheets, shared_worksheets=shared_worksheets)
 
 @worksheet_bp.route('/create_worksheet', methods=['GET', 'POST'])
 @login_required
@@ -60,7 +61,7 @@ def get_template(template_id):
 @login_required
 def preview_worksheet(worksheet_id):
     worksheet = Worksheet.query.get_or_404(worksheet_id)
-    if worksheet.user_id != current_user.id:
+    if worksheet.user_id != current_user.id and not (worksheet.is_shared and str(current_user.id) in worksheet.shared_with.split(',')):
         abort(403)
     return render_template('preview_worksheet.html', worksheet=worksheet)
 
@@ -68,7 +69,7 @@ def preview_worksheet(worksheet_id):
 @login_required
 def download_worksheet(worksheet_id):
     worksheet = Worksheet.query.get_or_404(worksheet_id)
-    if worksheet.user_id != current_user.id:
+    if worksheet.user_id != current_user.id and not (worksheet.is_shared and str(current_user.id) in worksheet.shared_with.split(',')):
         abort(403)
     
     pdf_file = generate_pdf(worksheet)
@@ -112,3 +113,25 @@ def delete_worksheet(worksheet_id):
         logger.error(f"Error deleting worksheet: {str(e)}")
         db.session.rollback()
         return jsonify({'success': False, 'error': 'An error occurred while deleting the worksheet'}), 500
+
+@worksheet_bp.route('/share_worksheet/<int:worksheet_id>', methods=['GET', 'POST'])
+@login_required
+def share_worksheet(worksheet_id):
+    worksheet = Worksheet.query.get_or_404(worksheet_id)
+    if worksheet.user_id != current_user.id:
+        abort(403)
+
+    if request.method == 'POST':
+        shared_usernames = request.form.get('shared_usernames', '').split(',')
+        shared_users = User.query.filter(User.username.in_(shared_usernames)).all()
+        
+        if not shared_users:
+            return jsonify({'success': False, 'error': 'No valid users found to share with'}), 400
+
+        worksheet.is_shared = True
+        worksheet.shared_with = ','.join([str(user.id) for user in shared_users])
+        db.session.commit()
+        logger.info(f"Worksheet shared: {worksheet_id} by user {current_user.id} with users {worksheet.shared_with}")
+        return jsonify({'success': True})
+
+    return render_template('share_worksheet.html', worksheet=worksheet)

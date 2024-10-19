@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Share Worksheet: {{ worksheet.title }}</h2>
+<form id="shareWorksheetForm">
+    <div class="mb-3">
+        <label for="shared_usernames" class="form-label">Enter usernames to share with (comma-separated)</label>
+        <input type="text" class="form-control" id="shared_usernames" name="shared_usernames" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Share Worksheet</button>
+</form>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const shareWorksheetForm = document.getElementById('shareWorksheetForm');
+
+    shareWorksheetForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+
+        fetch('/share_worksheet/{{ worksheet.id }}', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Worksheet shared successfully!');
+                window.location.href = '/dashboard';
+            } else {
+                alert('Failed to share worksheet. ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while sharing the worksheet');
+        });
+    });
+});
+</script>
+{% endblock %}
