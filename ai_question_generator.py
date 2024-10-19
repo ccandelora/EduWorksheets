@@ -1,12 +1,12 @@
 import os
-import openai
+from openai import OpenAI
 from flask import Blueprint, request, jsonify
 from flask_login import login_required
 
 ai_question_bp = Blueprint('ai_question', __name__)
 
 # Set up OpenAI API key
-openai.api_key = os.environ.get("OPENAI_API_KEY")
+client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 def generate_questions(subject, grade_level, topic, num_questions=5):
     subjects = ["math", "science", "reading", "writing", "spelling", "reading comprehension"]
@@ -21,7 +21,7 @@ def generate_questions(subject, grade_level, topic, num_questions=5):
     prompt = f"Generate {num_questions} diverse {grade_level} grade level questions about {subject} focusing on {topic}. Include a mix of question types (e.g., multiple choice, open-ended, problem-solving). Format the output as a numbered list."
 
     try:
-        response = openai.ChatCompletion.create(
+        response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "You are a helpful assistant that generates diverse and engaging educational questions."},
