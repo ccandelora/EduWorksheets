@@ -9,7 +9,10 @@ ai_question_bp = Blueprint('ai_question', __name__)
 genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
 
 def generate_questions(subject, grade_level, topic, num_questions=5):
-    subjects = ["math", "science", "reading", "writing", "spelling", "reading comprehension"]
+    subjects = [
+        "math", "science", "reading", "writing", "spelling", "reading comprehension",
+        "social studies", "history", "geography", "art", "music", "physical education"
+    ]
     grade_levels = ["K", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"]
 
     if subject.lower() not in subjects:
